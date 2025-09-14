@@ -12,7 +12,7 @@ const TeesScreen = () => {
     console.log(`Tee pressed: ${tee}, Gender: ${gender}`)
     // You can navigate to another screen or show statistics here
     router.push({pathname: '/TeeStats', params: { tee: JSON.stringify(tee), gender }})
-  };
+  }
 
   return (
     <View style={styles.container}>
