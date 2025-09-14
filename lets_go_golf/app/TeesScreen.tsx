@@ -1,16 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { router, useLocalSearchParams } from 'expo-router'
 import Icon from 'react-native-ico-lodgicons'
-import { teeColorMap } from '@/utils/teeColor';
+import teeColorMap from '@/utils/teeColor'
 
 const TeesScreen = () => {
-  const { course } = useLocalSearchParams(); // Get the course parameter
-  const parsedCourse = JSON.parse(course); // Parse the course object
+  const { course } = useLocalSearchParams()
+  const parsedCourse = JSON.parse(course)
+
   const handleTeePress = (tee, gender) => {
-    console.log(`Tee pressed: ${tee.name}, Gender: ${gender}`);
+    console.log(`Tee pressed: ${tee}, Gender: ${gender}`)
     // You can navigate to another screen or show statistics here
-    // Example: router.push('/TeeStats', { tee: JSON.stringify(tee), gender });
+    router.push({pathname: '/TeeStats', params: { tee: JSON.stringify(tee), gender }})
   };
 
   return (
@@ -27,7 +28,12 @@ const TeesScreen = () => {
             style={styles.teeButton}
             onPress={() => handleTeePress(tee, 'male')}
           >
-            <Icon name="golf-ball-and-tee" color={teeColorMap[tee.tee_name]}/>
+            <Icon 
+                name="golf-ball-and-tee" 
+                color={['White', 'Silver'].includes(tee.tee_name)
+                ? '#000'
+                : teeColorMap[tee.tee_name] || '#666'}
+            />
             <Text style={styles.teeText}>{`${tee.tee_name}: ${tee.total_yards} yds`}</Text>
           </TouchableOpacity>
         ))
@@ -44,7 +50,12 @@ const TeesScreen = () => {
             style={styles.teeButton}
             onPress={() => handleTeePress(tee, 'female')}
           >
-            <Icon name="golf-ball-and-tee"/>
+            <Icon 
+                name="golf-ball-and-tee" 
+                color={['White', 'Silver'].includes(tee.tee_name)
+                ? '#000'
+                : teeColorMap[tee.tee_name] || '#666'}
+            />
             <Text style={styles.teeText}>{`${tee.tee_name}: ${tee.total_yards} yds`}</Text>
           </TouchableOpacity>
         ))
@@ -61,14 +72,14 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 18, marginBottom: 16 },
   genderTitle: { fontSize: 20, fontWeight: 'bold', marginTop: 16 },
   teeButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#ffffff',
     padding: 12,
     borderRadius: 8,
     marginVertical: 8,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  teeText: { color: '#FFF', fontSize: 16, textAlign: 'center', marginLeft: 8 },
+  teeText: { fontSize: 16, textAlign: 'center', marginLeft: 8 },
   noTees: { fontSize: 16, fontStyle: 'italic', marginTop: 8 },
 });
 
