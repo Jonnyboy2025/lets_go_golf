@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native'
+import { View, Text, StyleSheet, Button } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import Icon from 'react-native-ico-lodgicons'
 import teeColorMap from '@/utils/teeColor'
@@ -10,10 +10,10 @@ const TeeStats = () => {
     console.log('Parsed Tee:', parsedTee)
 
     const handleTeePress = (holes) => {
-        console.log(`Tee pressed: ${holes}`)
+        console.log(`Start Match: ${holes}`)
         // You can navigate to another screen or show statistics here
-        // router.push({pathname: '/TeeStats', params: { tee: JSON.stringify(tee)}})
-      }
+        router.push({pathname: '/HoleComponent', params: { holes: JSON.stringify(holes) }})
+    }
 
     return (
         <View style={styles.container}>
