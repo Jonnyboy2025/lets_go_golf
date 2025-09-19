@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 
 const HoleComponent = () => {
@@ -7,8 +7,14 @@ const HoleComponent = () => {
     const parsedHoles = JSON.parse(holes)
     console.log('Parsed Holes:', parsedHoles)
     
+    const handleHolePress = (hole) => {
+        console.log(`Hole pressed: ${hole}`)
+        // You can navigate to another screen or show statistics here
+        router.push({pathname: '/Hole', params: { hole: JSON.stringify(hole) }})
+    }
+
     const renderItem = ({ item, index }) => (
-        <TouchableOpacity style={styles.holeItem}>
+        <TouchableOpacity style={styles.holeItem} onPress={() => handleHolePress(item)}>
             <Text style={styles.holeTitle}>Hole {index + 1}</Text>
             <Text>Par: {item.par}</Text>
             <Text>Yardage: {item.yardage}</Text>
