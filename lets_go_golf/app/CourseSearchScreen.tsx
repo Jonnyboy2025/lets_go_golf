@@ -33,7 +33,7 @@ const CourseSearchScreen = () => {
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('TeesScreen', {course: item })}>
+    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('./TeesScreen', {course: item })}>
       <Text style={styles.title}>{item.course_name}</Text>
       <Text style={styles.subtitle}>{item.club_name}</Text>
       <Text style={styles.meta}>{item.location.address}</Text>

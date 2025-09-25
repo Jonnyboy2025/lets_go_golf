@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Button, Text, Alert } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps'
-import * as FileSystem from 'expo-file-system'
+import firestore from "@react-native-firebase/firestore"
 
 const HoleMapperScreen = () => {
   const [mode, setMode] = useState('tee'); // tee | green | fairway | hazard
@@ -9,7 +9,9 @@ const HoleMapperScreen = () => {
   const [green, setGreen] = useState(null);
   const [fairway, setFairway] = useState([]);
   const [hazards, setHazards] = useState([]); // array of polygons
-  const [currentHazard, setCurrentHazard] = useState([]);
+  const [currentHazard, setCurrentHazard] = useState([])
+  const [courseName, setCourseName] = useState('My_Course')
+  const [holeNumber, setHoleNumber] = useState(1)
 
   const handleMapPress = (e) => {
     const coord = e.nativeEvent.coordinate;
@@ -44,7 +46,7 @@ const HoleMapperScreen = () => {
       Alert.alert('Missing data', 'You must set tee, green, and fairway.');
       return;
     }
-  
+
     const holeData = {
       holeNumber: 1,
       par: 4,
@@ -53,19 +55,15 @@ const HoleMapperScreen = () => {
       fairway,
       hazards: hazards.length > 0 ? hazards : undefined,
       createdAt: new Date().toISOString(),
-    };
-  
-    const fileUri = FileSystem.documentDirectory + `hole-${holeData.holeNumber}.json`;
-  
-    try {
-      await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(holeData, null, 2));
-      Alert.alert('✅ Hole saved!', `Saved to: ${fileUri}`);
-      console.log('Hole saved to', fileUri);
-    } catch (err) {
-      console.error('Failed to save hole:', err);
-      Alert.alert('❌ Save failed', err.message);
+      courseName,
     }
-  };
+
+    firestore().collection('Courses').doc(courseName).collection('Holes').doc(`hole-${holeNumber}`).set({
+      holeData
+    }).then(() => {
+      Alert.alert('Success', 'Hole data saved to Firestore');
+    })
+  }
   
 
   return (
