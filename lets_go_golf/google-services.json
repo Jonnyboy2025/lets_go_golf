@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "194809525163",
+    "project_id": "letsgo-d5856",
+    "storage_bucket": "letsgo-d5856.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194809525163:android:86524754e19c8199f718ee",
+        "android_client_info": {
+          "package_name": "com.john_blackaby25.lets_go_golf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXACo3xCx7Utnbr7KPW1_rtYDu0ep1HMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

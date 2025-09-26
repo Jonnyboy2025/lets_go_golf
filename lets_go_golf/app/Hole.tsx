@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Button, Text, Alert } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps'
-import firestore from "@react-native-firebase/firestore"
+import { db } from '@/firebaseConfig'
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
 
 const HoleMapperScreen = () => {
   const [mode, setMode] = useState('tee'); // tee | green | fairway | hazard
@@ -42,28 +43,38 @@ const HoleMapperScreen = () => {
   };
 
   const exportHoleData = async () => {
-    if (!tee || !green || fairway.length < 3) {
-      Alert.alert('Missing data', 'You must set tee, green, and fairway.');
-      return;
-    }
-
-    const holeData = {
-      holeNumber: 1,
-      par: 4,
-      tee,
-      green,
-      fairway,
-      hazards: hazards.length > 0 ? hazards : undefined,
-      createdAt: new Date().toISOString(),
-      courseName,
-    }
-
-    firestore().collection('Courses').doc(courseName).collection('Holes').doc(`hole-${holeNumber}`).set({
-      holeData
-    }).then(() => {
-      Alert.alert('Success', 'Hole data saved to Firestore');
-    })
+  if (!tee || !green || fairway.length < 3) {
+    Alert.alert('Missing data', 'You must set tee, green, and fairway.');
+    return;
   }
+
+  const holeData = {
+    holeNumber: holeNumber,
+    par: 4,
+    tee,
+    green,
+    fairway,
+    hazards: hazards.length > 0
+      ? hazards.map((polygon) => ({ points: polygon }))
+      : [],
+    createdAt: new Date().toISOString(),
+    courseName,
+  };
+
+  try {
+    const holeRef = doc(
+      collection(db, 'Courses', courseName, 'Holes'),
+      `hole-${holeNumber}`
+    );
+
+    await setDoc(holeRef, holeData);
+
+    Alert.alert('Success', 'Hole data saved to Firestore');
+  } catch (error) {
+    console.error('Error saving hole data:', error);
+    Alert.alert('Error', 'Failed to save hole data.');
+  }
+}
   
 
   return (

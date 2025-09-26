@@ -22,6 +22,7 @@ export default {
         monochromeImage: './assets/images/android-icon-monochrome.png',
         backgroundColor: '#E6F4FE',
       },
+      googleServicesFile: './google-services.json',
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       package: 'com.john_blackaby25.lets_go_golf',
