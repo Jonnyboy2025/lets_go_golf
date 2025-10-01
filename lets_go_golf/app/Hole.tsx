@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Button, Text, Alert } from 'react-native';
 import MapView, { Marker, Polygon } from 'react-native-maps'
 import { db } from '@/firebaseConfig'
-import { doc, setDoc, collection, addDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, getDoc } from 'firebase/firestore';
+import { useLocalSearchParams } from 'expo-router';
 
 const HoleMapperScreen = () => {
-  const [mode, setMode] = useState('tee'); // tee | green | fairway | hazard
-  const [tee, setTee] = useState(null);
-  const [green, setGreen] = useState(null);
-  const [fairway, setFairway] = useState([]);
-  const [hazards, setHazards] = useState([]); // array of polygons
+  const { hole, course_name, courseId, hole_number } = useLocalSearchParams()
+  const holeData = JSON.parse(hole)
+  const [mode, setMode] = useState('tee') // tee | green | fairway | hazard
+  const [tee, setTee] = useState(null)
+  const [green, setGreen] = useState(null)
+  const [fairway, setFairway] = useState([])
+  const [hazards, setHazards] = useState([]) // array of polygons
   const [currentHazard, setCurrentHazard] = useState([])
-  const [courseName, setCourseName] = useState('My_Course')
-  const [holeNumber, setHoleNumber] = useState(1)
-
+  const [courseName, setCourseName] = useState(course_name)
+  const [holeNumber, setHoleNumber] = useState(hole_number)
+  console.log('Hole Data:', courseId, courseName)
   const handleMapPress = (e) => {
     const coord = e.nativeEvent.coordinate;
 
@@ -42,6 +45,40 @@ const HoleMapperScreen = () => {
     }
   };
 
+  const loadHoleData = async () => {
+    if (!courseId || holeNumber === undefined) {
+      console.warn('Missing courseId or holeNumber');
+      return;
+    }
+  
+    try {
+      const holeRef = doc(
+        db,
+        'Courses',
+        `${courseName}-${courseId}`,
+        'Holes',
+        `hole-${holeNumber}`
+      );
+  
+      const docSnap = await getDoc(holeRef);
+  
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log('Loaded hole data:', data);
+  
+        setTee(data.tee || null);
+        setGreen(data.green || null);
+        setFairway(data.fairway || []);
+        setHazards(data.hazards?.map(h => h.points) || []);
+      } else {
+        console.log('No existing hole data found.');
+      }
+    } catch (error) {
+      console.error('Error loading hole data:', error);
+    }
+  };
+  
+
   const exportHoleData = async () => {
   if (!tee || !green || fairway.length < 3) {
     Alert.alert('Missing data', 'You must set tee, green, and fairway.');
@@ -63,7 +100,7 @@ const HoleMapperScreen = () => {
 
   try {
     const holeRef = doc(
-      collection(db, 'Courses', courseName, 'Holes'),
+      collection(db, 'Courses', `${courseName}-${courseId}`, 'Holes'),
       `hole-${holeNumber}`
     );
 
@@ -75,6 +112,10 @@ const HoleMapperScreen = () => {
     Alert.alert('Error', 'Failed to save hole data.');
   }
 }
+useEffect(() => {
+  loadHoleData();
+}, []);
+
   
 
   return (

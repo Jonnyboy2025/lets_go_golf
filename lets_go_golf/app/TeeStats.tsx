@@ -5,14 +5,14 @@ import Icon from 'react-native-ico-lodgicons'
 import teeColorMap from '@/utils/teeColor'
 
 const TeeStats = () => {
-    const { tee } = useLocalSearchParams()
+    const { tee, course_name, courseId } = useLocalSearchParams()
     const parsedTee = JSON.parse(tee)
     console.log('Parsed Tee:', parsedTee)
 
     const handleTeePress = (holes) => {
         console.log(`Start Match: ${holes}`)
         // You can navigate to another screen or show statistics here
-        router.push({pathname: '/HoleComponent', params: { holes: JSON.stringify(holes) }})
+        router.push({pathname: '/HoleComponent', params: { holes: JSON.stringify(holes), course_name: course_name, courseId: courseId}})
     }
 
     return (

@@ -13,6 +13,13 @@ export default {
 
     ios: {
       supportsTablet: true,
+      package: 'com.john_blackaby25.lets_go_golf',
+      bundleIdentifier: "com.john-blackaby25.lets-go-golf",
+      config: {
+        googleMaps: {
+          apiKey: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      },
     },
 
     android: {

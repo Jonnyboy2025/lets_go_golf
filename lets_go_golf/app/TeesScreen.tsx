@@ -11,7 +11,7 @@ const TeesScreen = () => {
   const handleTeePress = (tee, gender) => {
     console.log(`Tee pressed: ${tee}, Gender: ${gender}`)
     // You can navigate to another screen or show statistics here
-    router.push({pathname: '/TeeStats', params: { tee: JSON.stringify(tee), gender }})
+    router.push({pathname: '/TeeStats', params: { tee: JSON.stringify(tee), course_name: parsedCourse.course_name, courseId: parsedCourse.id}})
   }
 
   return (
